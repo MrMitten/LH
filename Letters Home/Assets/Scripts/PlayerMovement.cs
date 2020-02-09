@@ -41,8 +41,8 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
-            if (timerS < Time.time && Input.GetKeyDown(KeyCode.S))
+            //Double tap code.
+            /*if (timerS < Time.time && Input.GetKeyDown(KeyCode.S))
             {
                 timerS  = Time.time + doubleTapTimer;
             }
@@ -60,7 +60,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 timerW = Time.time;
                 ToggleUp();
+            }*/
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                timerS = Time.time;
+                ToggleDown();
             }
+
+            if(Input.GetKeyDown(KeyCode.W))
+            {
+                timerW = Time.time;
+                ToggleUp();
+            }
+
             if (canVault && Input.GetKeyDown(KeyCode.F))
             {
                 transform.position = VaultPos.position;

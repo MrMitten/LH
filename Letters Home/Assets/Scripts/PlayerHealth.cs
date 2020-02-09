@@ -7,6 +7,8 @@ public class PlayerHealth : MonoBehaviour
     bool isDead = false;
     PlayerMovement moveyBoi;
 
+    public Item myItem;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +25,15 @@ public class PlayerHealth : MonoBehaviour
 
     }
 
+    public void EquipItemPlayer(Item toQuip)
+    {
+        if(myItem != null)
+        {
+            myItem.gameObject.transform.position = transform.position + Vector3.down;
+            myItem.gameObject.SetActive(true);
+        }
+        myItem = toQuip;
+    }
 
     public void Reset()
     {
@@ -38,4 +49,13 @@ public class PlayerHealth : MonoBehaviour
     {
         return isDead;
     }
+
+    public void InvokeItem()
+    {
+        if(myItem != null)
+        {
+            myItem.UseItem();
+        }
+    }
+
 }
