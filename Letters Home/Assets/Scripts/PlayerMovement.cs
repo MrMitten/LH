@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D me;
     public float MoveSpeed = 1.0f;
     Vector2 MoveVector = new Vector2();
-    public bool duck;
+    public bool crouch;
     public bool crawl;
     public bool Up;
     public List<Vector2> BoxSizes;
@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     private float timerS;
     private float timerW;
     private float doubleTapTimer = 0.35f;
+    public static int Lane = 0;
+    public static bool CanChangeLanes = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        print(Lane);
         if (!m_dead)
         {
             MoveVector = Vector2.zero;
@@ -61,18 +64,26 @@ public class PlayerMovement : MonoBehaviour
                 timerW = Time.time;
                 ToggleUp();
             }*/
-
-            if (Input.GetKeyDown(KeyCode.S))
+            if (CanChangeLanes && crouch == false && crawl == false && Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftShift))
+            {
+                Lane = 0;
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
             {
                 timerS = Time.time;
                 ToggleDown();
             }
 
-            if(Input.GetKeyDown(KeyCode.W))
+            if(CanChangeLanes && crouch == false && crawl == false && Input.GetKeyDown(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
+            {
+                Lane = 1;
+            }
+            else if(Input.GetKeyDown(KeyCode.W))
             {
                 timerW = Time.time;
                 ToggleUp();
             }
+            
 
             if (canVault && Input.GetKeyDown(KeyCode.F))
             {
@@ -105,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
                 Anim.SetBool("Crawlin", true);
                 Anim.SetBool("Crouch", false);
             }
-            else if (duck && mine.offset.y != -.1f)
+            else if (crouch && mine.offset.y != -.1f)
             {
                 mine.offset = new Vector2(mine.offset.x, (BoxSizes[1][1] - (BoxSizes[0][1] - 0.1f )) / 2);
                 mine.size = BoxSizes[1];
@@ -115,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
                 //print("Crouching!!");
                
             }
-            else if (!duck && !crawl && mine.offset.y != .17f)
+            else if (!crouch && !crawl && mine.offset.y != .17f)
             {
                 mine.size = BoxSizes[0];
                 mine.offset = new Vector2(mine.offset.x, .17f);
@@ -127,6 +138,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void SetSpeed(int nes)
+    {
+        MoveSpeed = nes;   
+    }
 
 
     void OnTriggerEnter2D(Collider2D col)
@@ -148,13 +163,13 @@ public class PlayerMovement : MonoBehaviour
 
     void ToggleDown() {
 
-        if (duck == false && crawl == false)
+        if (crouch == false && crawl == false)
         {
-            duck = true;
-        }else if(duck = true && crawl == false)
+            crouch = true;
+        }else if(crouch = true && crawl == false)
         {
             crawl = true;
-            duck = false;
+            crouch = false;
         }
 
     }
@@ -162,15 +177,15 @@ public class PlayerMovement : MonoBehaviour
     void ToggleUp()
     {
 
-        if (duck == false && crawl == true)
+        if (crouch == false && crawl == true)
         {
-            duck = true;
+            crouch = true;
             crawl = false;
         }
-        else if (duck = true && crawl == false)
+        else if (crouch = true && crawl == false)
         {
             crawl = false;
-            duck = false;
+            crouch = false;
         }
 
     }

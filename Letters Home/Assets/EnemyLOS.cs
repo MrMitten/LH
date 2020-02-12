@@ -22,7 +22,6 @@ public class EnemyLOS : MonoBehaviour
 
                 Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position), Color.magenta);
                 Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position), Color.magenta);
-
                 //print(hit.collider.GetComponent<Transform>().gameObject);
                 //print(hit1.collider.gameObject.tag);
                 //print(hit2.collider.gameObject.tag);

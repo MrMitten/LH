@@ -10,10 +10,16 @@ public class Patrol : MonoBehaviour
 
     public Transform groundDetection;
 
+    public float zDist;
+
+    void Start()
+    {
+        zDist = transform.position.z;
+    }
     void Update()
     {
         transform.Translate(Vector2.right * Time.deltaTime * speed);
-
+        transform.position = new Vector3(transform.position.x, transform.position.y, zDist);
         RaycastHit2D groundInfo = Physics2D.Raycast(groundDetection.position, Vector2.down, 2f);
         if(groundInfo.collider == false)
         {
