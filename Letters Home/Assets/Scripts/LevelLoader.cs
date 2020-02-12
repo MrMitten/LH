@@ -5,11 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    public string scene;
+
     // Start is called before the first frame update
     void Start()
     {
-        scene = "";
+
     }
 
     // Update is called once per frame
