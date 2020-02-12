@@ -21,6 +21,11 @@ public class PlayerHealth : MonoBehaviour
         if(isDead && moveyBoi.m_dead != true) {
             moveyBoi.m_dead = true; }
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            print("Using Item!");
+            InvokeItem();
+        }
 
 
     }
@@ -29,10 +34,12 @@ public class PlayerHealth : MonoBehaviour
     {
         if(myItem != null)
         {
+            myItem.Dequip();
             myItem.gameObject.transform.position = transform.position + Vector3.down;
             myItem.gameObject.SetActive(true);
         }
         myItem = toQuip;
+        myItem.Equip();
     }
 
     public void Reset()

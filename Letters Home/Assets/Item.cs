@@ -9,10 +9,21 @@ public class Item : MonoBehaviour
     public string Name;
 
     public UnityEvent OnUse;
+    public UnityEvent OnEquip;
+    public UnityEvent OnDequip;
 
     public void UseItem()
     {
         OnUse.Invoke();
+    }
+
+    public void Equip()
+    {
+        OnEquip.Invoke();
+    }
+    public void Dequip()
+    {
+        OnDequip.Invoke();
     }
 
     private void OnTriggerStay2D(Collider2D other)
