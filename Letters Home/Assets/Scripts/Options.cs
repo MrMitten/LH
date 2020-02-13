@@ -6,11 +6,14 @@ using UnityEngine.UI;
 
 public class Options : MonoBehaviour
 {
-    private static float musicVolume;
-    private static float SFXVolume;
-    private static float NarrationVolume;
-    private static bool isFullscreen;
-    private AudioMixer audioMixer;
+    private static float prevMusVol;
+    private static float prevSFXVol;
+    private static float prevNarVol;
+
+    public AudioMixer MusicMixer;
+    public AudioMixer SFXMixer;
+    public AudioMixer NarrationMixer;
+
     private Resolution[] resolutions;
     public Dropdown resolutionDropdown;
 
@@ -40,68 +43,101 @@ public class Options : MonoBehaviour
         
     }
 
-    #region Getters & Setters
 
-    void setMusicVolume(float v)
+    public void setMusicVolume(float v)
 
     {
-        musicVolume = v;
-        audioMixer.SetFloat("Volume", v);
+        MusicMixer.SetFloat("MusicVolume", Mathf.Log10(v) * 20);
     }
 
-    void setSFXVolume(float v)
+    public void setSFXVolume(float v)
     {
-        SFXVolume = v;
-        audioMixer.SetFloat("Volume", v);
+        SFXMixer.SetFloat("SFXVolume", Mathf.Log10(v) * 20);
     }
 
-    void setNarrationVolume(float v)
+    public void setNarrationVolume(float v)
     {
-        NarrationVolume = v;
-        audioMixer.SetFloat("Volume", v);
+        NarrationMixer.SetFloat("NarrationVolume", Mathf.Log10(v) * 20);
     }
 
-    private void setIsFullscreen(bool x)
+    public float getMusicVolume()
     {
-        isFullscreen = x;
+        float v;
+        MusicMixer.GetFloat("MusicVolume", out v);
+        return v;
+
     }
 
-    float getMusicVolume()
+    public float getSFXVolume()
     {
-        return musicVolume;
+        float v;
+        SFXMixer.GetFloat("SFXVolume", out v);
+        return v;
+
     }
 
-    float getSFXVolume()
+    public float getNarrationVolume()
     {
-        return SFXVolume;
-    }
+        float v;
+        NarrationMixer.GetFloat("NarrationVolume", out v);
+        return v;
 
-    float getNarrationVolume()
-    {
-        return NarrationVolume;
     }
-    bool getIsFullscreen()
-    {
-        return isFullscreen;
-    }
-
-    void setQuality(int q)
+    public void setQuality(int q)
     {
         QualitySettings.SetQualityLevel(q);
+        Debug.Log(QualitySettings.GetQualityLevel().ToString());
+        //TODO: Fix this
     }
 
-
-    #endregion
-
-    void setScreenSize(int r)
+    public void setScreenSize(int r)
     {
         Resolution res = resolutions[r];
-        Screen.SetResolution(res.width, res.height, isFullscreen);
+        Screen.SetResolution(res.width, res.height, Screen.fullScreen);
     }
 
-    void toggleFullscreen()
+    public void toggleFullscreen(bool isFullscreen)
     {
-        setIsFullscreen(!isFullscreen);
         Screen.fullScreen = isFullscreen;
+    }
+    
+    public void toggleMuteMusic()
+    {
+        float vol = getMusicVolume();
+        if (vol != -80)
+        {
+            prevMusVol = vol;
+            setMusicVolume(-80);
+        }
+        else
+        {
+            setMusicVolume(prevMusVol);
+        }
+    }
+    public void toggleMuteSFX()
+    {
+        float vol = getSFXVolume();
+        if (vol != -80)
+        {
+            prevSFXVol = vol;
+            setSFXVolume(-80);
+        }
+        else
+        {
+            setSFXVolume(prevSFXVol);
+        }
+    }
+    public void toggleMuteNar()
+    {
+        float vol = getNarrationVolume();
+        if (vol != -80)
+        {
+            prevNarVol = vol;
+            setNarrationVolume(-80);
+        }
+        else
+        {
+            setNarrationVolume(prevNarVol);
+        }
     }
 }
