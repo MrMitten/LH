@@ -5,9 +5,12 @@ using UnityEngine;
 public class ClimbLadder : MonoBehaviour
 {
     public Transform ladderTop;
+    public float climbSpeed = 3;
+
     public bool attached = false;
     void OnTriggerStay2D(Collider2D col)
     {
+
         if(col.gameObject.tag == "Player" && !col.gameObject.GetComponent<Player>().GetDead())
         {
             col.gameObject.GetComponent<PlayerMovement>().attached = attached;
@@ -31,12 +34,24 @@ public class ClimbLadder : MonoBehaviour
         }
     }
 
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player" && !other.gameObject.GetComponent<Player>().GetDead())
+        {
+            other.gameObject.GetComponent<PlayerMovement>().climbSpeed = climbSpeed;
+            UI_InvFinder.me.nearItem = true;
+            UI_InvFinder.me.messageText.text = "Hold F to climb";
+        }
+    }
+
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.tag == "Player")
         {
             col.gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
             col.gameObject.GetComponent<PlayerMovement>().attached = false;
+            UI_InvFinder.me.nearItem = false;
         }
     }
 }

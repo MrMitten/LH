@@ -23,6 +23,12 @@ public class PlayerMovement : MonoBehaviour
     private float doubleTapTimer = 0.35f;
     public static int Lane = 0;
     public static bool CanChangeLanes = true;
+
+    private bool swapped = false;
+
+    [HideInInspector]
+    public float climbSpeed = 3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         {
             crawl = false;
             crouch = false;
-            transform.Translate(new Vector3(0, Input.GetAxis("Vertical"), 0) * Time.deltaTime * 10);
+            transform.Translate(new Vector3(0, Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
         }
         print(Lane);
         if (!m_dead && !UI_InvFinder.me.Dialogue)
@@ -73,7 +79,12 @@ public class PlayerMovement : MonoBehaviour
             }*/
             if (CanChangeLanes && crouch == false && crawl == false && Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.LeftShift))
             {
+                if (Lane == 1)
+                {
+                    this.transform.position = new Vector2(transform.position.x, transform.position.y - 0.55f);
+                }
                 Lane = 0;
+                
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
@@ -83,7 +94,12 @@ public class PlayerMovement : MonoBehaviour
 
             if(CanChangeLanes && crouch == false && crawl == false && Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
             {
+                if (Lane == 0)
+                {
+                    this.transform.position = new Vector2(transform.position.x, transform.position.y + 0.55f);
+                }
                 Lane = 1;
+                
             }
             else if(Input.GetKeyDown(KeyCode.W))
             {
