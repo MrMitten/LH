@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
             transform.Translate(new Vector3(0, Input.GetAxis("Vertical"), 0) * Time.deltaTime * 10);
         }
         print(Lane);
-        if (!m_dead)
+        if (!m_dead && !UI_InvFinder.me.Dialogue)
         {
             MoveVector = Vector2.zero;
 
@@ -142,6 +142,19 @@ public class PlayerMovement : MonoBehaviour
                 print("Not Crouching!!");
             }
             //Condition for the crawling
+        }
+        else
+        {
+            if (m_dead == true)
+            {
+                Anim.SetBool("Crawlin", true);
+            }
+            else
+            {
+                Anim.SetBool("Crawlin", false);
+            }
+            Anim.SetBool("Walkin", false);
+            Anim.SetBool("Crouch", false);
         }
     }
 
