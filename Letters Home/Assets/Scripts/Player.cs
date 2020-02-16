@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class Player : MonoBehaviour
 {
     bool isDead = false;
     PlayerMovement moveyBoi;

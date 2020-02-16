@@ -9,7 +9,7 @@ public class DeathZone : MonoBehaviour
         print("Test");
         if(other.gameObject.tag == "Player") {
 
-            other.gameObject.GetComponent<PlayerHealth>().SetDead();
+            other.gameObject.GetComponent<Player>().SetDead();
             print("Got Domed.");
         }
 

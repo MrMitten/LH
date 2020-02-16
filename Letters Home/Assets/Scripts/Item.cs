@@ -30,7 +30,7 @@ public class Item : MonoBehaviour
     {
         if(other.gameObject.tag == "Player" && Input.GetKeyDown(KeyCode.F))
         {
-            other.gameObject.GetComponent<PlayerHealth>().EquipItemPlayer(this);
+            other.gameObject.GetComponent<Player>().EquipItemPlayer(this);
             UI_InvFinder.me.EquipItem(this);
             this.gameObject.SetActive(false);
 
