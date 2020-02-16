@@ -130,7 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 513427150}
   m_Layer: 0
-  m_Name: Ground Detection
+  m_Name: GroundDetection
   m_TagString: Untagged
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 863802810}
   - component: {fileID: 863802809}
   m_Layer: 0
-  m_Name: New Sprite
+  m_Name: GroundSpritePlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -518,7 +518,7 @@ GameObject:
   - component: {fileID: 1666981703}
   - component: {fileID: 1666981702}
   m_Layer: 2
-  m_Name: Player Sprite
+  m_Name: EnemySpritePlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -600,7 +600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f93af4267ce1d46b093818fbf45570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 100
   groundDetection: {fileID: 513427150}
   zDist: 0
 --- !u!61 &1666981702
@@ -657,7 +657,7 @@ GameObject:
   - component: {fileID: 2065131204}
   - component: {fileID: 2065131207}
   m_Layer: 0
-  m_Name: New Sprite (1)
+  m_Name: PlayerSpritePlaceholder
   m_TagString: Vaultable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
