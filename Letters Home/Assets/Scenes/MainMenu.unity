@@ -699,7 +699,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: KindraScene
+          m_StringArgument: Intro Level
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &726570147
@@ -1085,7 +1085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eec66f1f2e64f2a4dbfe8ae1141d84d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameScene: KindraScene
+  gameScene: Intro Level
 --- !u!1 &874466917
 GameObject:
   m_ObjectHideFlags: 0
