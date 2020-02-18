@@ -104,7 +104,7 @@ public class Options : MonoBehaviour
     public void toggleMuteMusic()
     {
         float vol = getMusicVolume();
-        if (vol != -80)
+        if (vol != -80 && ! float.IsNaN(vol))
         {
             prevMusVol = vol;
             setMusicVolume(-80);
@@ -117,7 +117,7 @@ public class Options : MonoBehaviour
     public void toggleMuteSFX()
     {
         float vol = getSFXVolume();
-        if (vol != -80)
+        if (vol != -80 && !float.IsNaN(vol))
         {
             prevSFXVol = vol;
             setSFXVolume(-80);
@@ -130,7 +130,7 @@ public class Options : MonoBehaviour
     public void toggleMuteNar()
     {
         float vol = getNarrationVolume();
-        if (vol != -80)
+        if (vol != -80 && !float.IsNaN(vol))
         {
             prevNarVol = vol;
             setNarrationVolume(-80);
