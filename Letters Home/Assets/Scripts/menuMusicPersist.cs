@@ -50,7 +50,7 @@ public class menuMusicPersist : MonoBehaviour
         }
         else if (this != _instance)
         {
-            // Play();
+            //Play();
             Debug.Log("Is Not Null");
             Destroy(this.gameObject);
         }
