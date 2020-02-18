@@ -11,13 +11,13 @@ public class VolumeControlNoahPrototype : MonoBehaviour
     public float[] HieghtPoints = new float[2];
     public float volumeLow;
     public float volumeHigh;
-    PlayerHealth checker;
+    Player checker;
     bool hasfired;
     // Start is called before the first frame update
     void Start()
     {
         HieghtPoints[0] = transform.position.y;
-        checker = GetComponent<PlayerHealth>();
+        checker = GetComponent<Player>();
     }
 
     // Update is called once per frame

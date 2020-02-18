@@ -10,7 +10,7 @@ public class SmoothCam2D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BoundsLR[0] += transform.position.x;
+        //BoundsLR[0] += transform.position.x;
     }
 
     // Update is called once per frame

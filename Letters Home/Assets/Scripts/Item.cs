@@ -7,10 +7,24 @@ public class Item : MonoBehaviour
 {
     public Sprite myUI;
     public string Name;
+    private bool canGrab = false;
 
     public UnityEvent OnUse;
     public UnityEvent OnEquip;
     public UnityEvent OnDequip;
+    private GameObject Player;
+
+    private void Update()
+    {
+        if (canGrab && Input.GetKeyDown(KeyCode.F))
+        {
+            Player.GetComponent<Player>().EquipItemPlayer(this);
+            UI_InvFinder.me.EquipItem(this);
+            canGrab = false;
+            this.gameObject.SetActive(false);
+            
+        }
+    }
 
     public void UseItem()
     {
@@ -26,18 +40,15 @@ public class Item : MonoBehaviour
         OnDequip.Invoke();
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag == "Player" && Input.GetKeyDown(KeyCode.F))
+        if(other.gameObject.tag == "Player")
         {
-            other.gameObject.GetComponent<PlayerHealth>().EquipItemPlayer(this);
-            UI_InvFinder.me.EquipItem(this);
-            this.gameObject.SetActive(false);
-
-        }else if(other.gameObject.tag == "Player")
-        {
+            Player = other.gameObject;
             UI_InvFinder.me.messageText.text = "PRESS F TO PICKUP:" + Name;
             UI_InvFinder.me.nearItem = true;
+            canGrab = true;
+
         }
     }
 
@@ -46,6 +57,7 @@ public class Item : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             UI_InvFinder.me.nearItem = false;
+            canGrab = false;
         }
     }
 

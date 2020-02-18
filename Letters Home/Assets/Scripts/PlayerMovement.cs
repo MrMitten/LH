@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D me;
     public float MoveSpeed = 1.0f;
     Vector2 MoveVector = new Vector2();
+    public bool attached;
     public bool crouch;
     public bool crawl;
     public bool Up;
@@ -22,6 +23,12 @@ public class PlayerMovement : MonoBehaviour
     private float doubleTapTimer = 0.35f;
     public static int Lane = 0;
     public static bool CanChangeLanes = true;
+
+    private bool swapped = false;
+
+    [HideInInspector]
+    public float climbSpeed = 3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,8 +40,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (attached)
+        {
+            crawl = false;
+            crouch = false;
+            transform.Translate(new Vector3(0, Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
+        }
         print(Lane);
-        if (!m_dead)
+        if (!m_dead && !UI_InvFinder.me.Dialogue)
         {
             MoveVector = Vector2.zero;
 
@@ -64,9 +77,14 @@ public class PlayerMovement : MonoBehaviour
                 timerW = Time.time;
                 ToggleUp();
             }*/
-            if (CanChangeLanes && crouch == false && crawl == false && Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftShift))
+            if (CanChangeLanes && crouch == false && crawl == false && Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.LeftShift))
             {
+                if (Lane == 1)
+                {
+                    this.transform.position = new Vector2(transform.position.x, transform.position.y - 0.55f);
+                }
                 Lane = 0;
+                
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
@@ -74,9 +92,14 @@ public class PlayerMovement : MonoBehaviour
                 ToggleDown();
             }
 
-            if(CanChangeLanes && crouch == false && crawl == false && Input.GetKeyDown(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
+            if(CanChangeLanes && crouch == false && crawl == false && Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
             {
+                if (Lane == 0)
+                {
+                    this.transform.position = new Vector2(transform.position.x, transform.position.y + 0.55f);
+                }
                 Lane = 1;
+                
             }
             else if(Input.GetKeyDown(KeyCode.W))
             {
@@ -85,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
             }
             
 
-            if (canVault && Input.GetKeyDown(KeyCode.F))
+            if (canVault && Input.GetKey(KeyCode.F))
             {
                 transform.position = VaultPos.position;
                 canVault = false;
@@ -136,6 +159,19 @@ public class PlayerMovement : MonoBehaviour
             }
             //Condition for the crawling
         }
+        else
+        {
+            if (m_dead == true)
+            {
+                Anim.SetBool("Crawlin", true);
+            }
+            else
+            {
+                Anim.SetBool("Crawlin", false);
+            }
+            Anim.SetBool("Walkin", false);
+            Anim.SetBool("Crouch", false);
+        }
     }
 
     public void SetSpeed(int nes)
@@ -162,7 +198,6 @@ public class PlayerMovement : MonoBehaviour
 
 
     void ToggleDown() {
-
         if (crouch == false && crawl == false)
         {
             crouch = true;
