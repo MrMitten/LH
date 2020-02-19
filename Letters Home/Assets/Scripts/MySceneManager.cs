@@ -8,6 +8,7 @@ public class MySceneManager : MonoBehaviour
     private static object lockObject = new object();
     private static MySceneManager instance;
     private Stack<int> loadedLevels;
+    private static PauseMenu _PauseMenu = new PauseMenu();
 
     public static MySceneManager Instance
     {
@@ -67,6 +68,7 @@ public class MySceneManager : MonoBehaviour
         if (Instance.loadedLevels.Count > 0)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene(Instance.loadedLevels.Pop());
+            _PauseMenu.Resume();
         }
         else
         {
