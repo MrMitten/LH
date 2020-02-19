@@ -15,7 +15,7 @@ public class ClimbLadder : MonoBehaviour
         {
             col.gameObject.GetComponent<PlayerMovement>().attached = attached;
 
-            attached = Input.GetKey(KeyCode.F);
+            attached = Input.GetButton("Interact");
 
 
             if (attached)
@@ -41,7 +41,7 @@ public class ClimbLadder : MonoBehaviour
         {
             other.gameObject.GetComponent<PlayerMovement>().climbSpeed = climbSpeed;
             UI_InvFinder.me.nearItem = true;
-            UI_InvFinder.me.messageText.text = "Hold F to climb";
+            UI_InvFinder.me.messageText.text = "Hold E to climb";
         }
     }
 

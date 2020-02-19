@@ -77,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
                 timerW = Time.time;
                 ToggleUp();
             }*/
-            if (CanChangeLanes && crouch == false && crawl == false && Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.LeftShift))
+            if (CanChangeLanes && !attached && (Input.GetButtonDown("DownLevel")))
             {
                 if (Lane == 1)
                 {
@@ -86,13 +86,9 @@ public class PlayerMovement : MonoBehaviour
                 Lane = 0;
                 
             }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                timerS = Time.time;
-                ToggleDown();
-            }
+           
 
-            if(CanChangeLanes && crouch == false && crawl == false && Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
+            if(CanChangeLanes && !attached && (Input.GetButtonDown("UpLevel")))
             {
                 if (Lane == 0)
                 {
@@ -101,14 +97,20 @@ public class PlayerMovement : MonoBehaviour
                 Lane = 1;
                 
             }
-            else if(Input.GetKeyDown(KeyCode.W))
+
+            if (Input.GetButtonDown("Crawl"))
+            {
+                timerS = Time.time;
+                ToggleCrawl();
+            }
+            else if(Input.GetButtonDown("Crouch"))
             {
                 timerW = Time.time;
-                ToggleUp();
+                ToggleCrouch();
             }
             
 
-            if (canVault && Input.GetKey(KeyCode.F))
+            if (canVault && (Input.GetButtonDown("Vault")))
             {
                 transform.position = VaultPos.position;
                 canVault = false;
@@ -197,32 +199,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    void ToggleDown() {
-        if (crouch == false && crawl == false)
-        {
-            crouch = true;
-        }else if(crouch = true && crawl == false)
-        {
-            crawl = true;
-            crouch = false;
-        }
+    void ToggleCrawl() {
+        crawl = !crawl;
+        crouch = false;
 
     }
 
-    void ToggleUp()
+    void ToggleCrouch()
     {
-
-        if (crouch == false && crawl == true)
-        {
-            crouch = true;
-            crawl = false;
-        }
-        else if (crouch = true && crawl == false)
-        {
-            crawl = false;
-            crouch = false;
-        }
-
+        crouch = !crouch;
+        crawl = false;
     }
 
 

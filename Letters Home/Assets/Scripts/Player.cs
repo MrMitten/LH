@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
         if(isDead && moveyBoi.m_dead != true) {
             moveyBoi.m_dead = true; }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButtonDown("UseItem"))
         {
             print("Using Item!");
             InvokeItem();

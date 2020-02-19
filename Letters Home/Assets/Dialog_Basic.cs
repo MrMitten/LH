@@ -32,7 +32,7 @@ public class Dialog_Basic : MonoBehaviour
     void Update()
     {
 
-        if (canTalk && Input.GetKeyDown(KeyCode.F) && !TriggerOnEnter && UI_InvFinder.me.Dialogue == false)
+        if (canTalk && Input.GetButton("Interact") && !TriggerOnEnter && UI_InvFinder.me.Dialogue == false)
         {
             UI_InvFinder.me.SetChoices(choices);
             
@@ -49,7 +49,7 @@ public class Dialog_Basic : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && social)
         {
-            UI_InvFinder.me.messageText.text = "Press F to talk to:" + NPCName;
+            UI_InvFinder.me.messageText.text = "Press E to talk to:" + NPCName;
             UI_InvFinder.me.nearItem = true;
             canTalk = true;
         }
