@@ -68,13 +68,13 @@ public class MySceneManager : MonoBehaviour
         if (Instance.loadedLevels.Count > 0)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene(Instance.loadedLevels.Pop());
-            _PauseMenu.Resume();
         }
         else
         {
             Debug.LogError("No previous scene loaded");
             // If you want, you can call `Application.Quit()` instead
         }
+            _PauseMenu.Resume();
     }
 
     private void Awake()
