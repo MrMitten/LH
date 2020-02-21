@@ -19,8 +19,9 @@ public class Item : MonoBehaviour
         if (canGrab && Input.GetButton("Interact"))
         {
             Player.GetComponent<Player>().EquipItemPlayer(this);
-            UI_InvFinder.me.EquipItem(this);
             canGrab = false;
+            UI_InvFinder.me.EquipItem(this);
+            UI_InvFinder.me.nearItem = false;
             this.gameObject.SetActive(false);
             
         }
@@ -40,7 +41,7 @@ public class Item : MonoBehaviour
         OnDequip.Invoke();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")
         {
@@ -52,7 +53,7 @@ public class Item : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {

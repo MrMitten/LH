@@ -5,15 +5,18 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public bool m_dead;
-    Rigidbody2D me;
+    Rigidbody me;
     public float MoveSpeed = 1.0f;
-    Vector2 MoveVector = new Vector2();
+    Vector3 MoveVector = new Vector3();
     public bool attached;
     public bool crouch;
     public bool crawl;
     public bool Up;
-    public List<Vector2> BoxSizes;
-    public BoxCollider2D mine;
+    public bool isVaulting;
+    public float totalVaultTime;
+    float vaulttimer;
+    public List<Vector2> CapsuleSizes;
+    public CapsuleCollider mine;
     Animator Anim;
 
     private bool canVault;
@@ -32,9 +35,9 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        me = GetComponent<Rigidbody2D>();
+        me = GetComponent<Rigidbody>();
         Anim = GetComponent<Animator>();
-        mine = GetComponent<BoxCollider2D>();
+        mine = GetComponent<CapsuleCollider>();
     }
 
     // Update is called once per frame
@@ -44,16 +47,16 @@ public class PlayerMovement : MonoBehaviour
         {
             crawl = false;
             crouch = false;
-            transform.Translate(new Vector3(0, Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
+            transform.Translate(new Vector3(0,Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
         }
-        print(Lane);
+        
         if (!m_dead && !UI_InvFinder.me.Dialogue)
         {
-            MoveVector = Vector2.zero;
+            MoveVector = Vector3.zero;
 
-            MoveVector += new Vector2(Input.GetAxis("Horizontal") * MoveSpeed, 0);
+            MoveVector += new Vector3(Input.GetAxis("Horizontal") * MoveSpeed, 0, Input.GetAxis("Vertical")*MoveSpeed);
 
-            me.transform.position += new Vector3(MoveVector.x, MoveVector.y, me.transform.position.z) * Time.deltaTime;
+            me.transform.position += new Vector3(MoveVector.x, MoveVector.y, MoveVector.z) * Time.deltaTime;
 
 
 
@@ -77,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
                 timerW = Time.time;
                 ToggleUp();
             }*/
-            if (CanChangeLanes && !attached && (Input.GetButtonDown("DownLevel")))
+            /*if (CanChangeLanes && !attached && (Input.GetButtonDown("DownLevel")))
             {
                 if (Lane == 1)
                 {
@@ -96,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 Lane = 1;
                 
-            }
+            }*/
 
             if (Input.GetButtonDown("Crawl"))
             {
@@ -112,18 +115,21 @@ public class PlayerMovement : MonoBehaviour
 
             if (canVault && (Input.GetButtonDown("Vault")))
             {
-                transform.position = VaultPos.position;
+                if(transform.localScale.x == 1)
+                    transform.position = VaultPos.position;
+                else
+                    transform.position = new Vector3(VaultPos.position.x - 5, VaultPos.position.y, VaultPos.position.z);
                 canVault = false;
             }
 
             
 
-            if (Input.GetAxis("Horizontal") < 0)
+            if (Input.GetAxis("Horizontal") < 0 || Input.GetAxis("Vertical") > 0)
             {
                 transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
                 Anim.SetBool("Walkin", true);
             }
-            else if ((Input.GetAxis("Horizontal") > 0))
+            else if ((Input.GetAxis("Horizontal") > 0) || Input.GetAxis("Vertical") < 0)
             {
                 transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
                 Anim.SetBool("Walkin", true);
@@ -132,32 +138,34 @@ public class PlayerMovement : MonoBehaviour
                 Anim.SetBool("Walkin", false);
 
 
-            if(crawl && mine.offset.y != -4f)
+            if(crawl && mine.center.y != CapsuleSizes[2][0])
             {
-                mine.offset = new Vector2(mine.offset.x, -.4f);
-                mine.size = BoxSizes[2];
+                mine.center = new Vector3(0, CapsuleSizes[2][0], 0);
+                mine.height = CapsuleSizes[2][1];
+                mine.direction = 0;
 
 
                 Anim.SetBool("Crawlin", true);
                 Anim.SetBool("Crouch", false);
             }
-            else if (crouch && mine.offset.y != -.1f)
+            else if (crouch && mine.center.y != CapsuleSizes[1][0])
             {
-                mine.offset = new Vector2(mine.offset.x, (BoxSizes[1][1] - (BoxSizes[0][1] - 0.1f )) / 2);
-                mine.size = BoxSizes[1];
-
+                mine.center = new Vector3(0, CapsuleSizes[1][0], 0);
+                mine.height = CapsuleSizes[1][1];
+                mine.direction = 1;
                 Anim.SetBool("Crawlin", false);
                 Anim.SetBool("Crouch", true);
                 //print("Crouching!!");
                
             }
-            else if (!crouch && !crawl && mine.offset.y != .17f)
+            else if (!crouch && !crawl && mine.center.y != CapsuleSizes[0][0])
             {
-                mine.size = BoxSizes[0];
-                mine.offset = new Vector2(mine.offset.x, .17f);
+                mine.height = CapsuleSizes[0][1];
+                mine.center = new Vector3(0, CapsuleSizes[0][0], 0);
                 Anim.SetBool("Crawlin", false);
                 Anim.SetBool("Crouch", false);
                 print("Not Crouching!!");
+                mine.direction = 1;
             }
             //Condition for the crawling
         }
@@ -182,18 +190,20 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    void OnTriggerEnter2D(Collider2D col)
+    void OnTriggerEnter(Collider col)
     {
         if(col.gameObject.tag == "Vaultable") {
             canVault = true;
+            print("found1");
             VaultPos = col.gameObject.GetComponent<Vaultable>().VaultEndpoint;
         }
     }
 
-    void OnTriggerExit2D(Collider2D col)
+    void OnTriggerExit(Collider col)
     {
         if (col.gameObject.tag == "Vaultable")
         {
+            print("found1");
             canVault = false;
         }
     }

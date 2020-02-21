@@ -45,7 +45,7 @@ public class Dialog_Basic : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player" && social)
         {
@@ -55,7 +55,7 @@ public class Dialog_Basic : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player" && social)
         {

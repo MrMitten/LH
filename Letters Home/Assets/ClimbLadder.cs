@@ -8,7 +8,7 @@ public class ClimbLadder : MonoBehaviour
     public float climbSpeed = 3;
 
     public bool attached = false;
-    void OnTriggerStay2D(Collider2D col)
+    void OnTriggerStay(Collider col)
     {
 
         if(col.gameObject.tag == "Player" && !col.gameObject.GetComponent<Player>().GetDead())
@@ -20,12 +20,14 @@ public class ClimbLadder : MonoBehaviour
 
             if (attached)
             {
-                col.gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
-                col.gameObject.transform.position = new Vector2(ladderTop.position.x, Mathf.Min(col.gameObject.transform.position.y, ladderTop.transform.position.y));
+                col.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                col.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                col.gameObject.transform.position = new Vector3(ladderTop.position.x, Mathf.Min(col.gameObject.transform.position.y, ladderTop.transform.position.y), ladderTop.position.z);
             }
             else
             {
-                col.gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
+                col.gameObject.GetComponent<Rigidbody>().useGravity = true;
+                col.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             }
 
         }else if(col.gameObject.tag == "Player" && col.gameObject.GetComponent<Player>().GetDead())
@@ -35,7 +37,7 @@ public class ClimbLadder : MonoBehaviour
     }
 
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player" && !other.gameObject.GetComponent<Player>().GetDead())
         {
@@ -45,11 +47,12 @@ public class ClimbLadder : MonoBehaviour
         }
     }
 
-    void OnTriggerExit2D(Collider2D col)
+    void OnTriggerExit(Collider col)
     {
         if (col.gameObject.tag == "Player")
         {
-            col.gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
+            col.gameObject.GetComponent<Rigidbody>().useGravity = true;
+            col.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             col.gameObject.GetComponent<PlayerMovement>().attached = false;
             UI_InvFinder.me.nearItem = false;
         }
