@@ -6,33 +6,42 @@ public class EnemyLOS : MonoBehaviour
 {
     public Transform RayStart;
     public float maxDis;
+    [HideInInspector]
     public GameObject Target;
+    [HideInInspector]
     public Vector3 LastSeen;
+    [HideInInspector]
     public bool canSee = false;
 
 
     // Update is called once per frame
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerStay(Collider other)
     {
+
         Debug.DrawRay(RayStart.position, (other.gameObject.transform.position - RayStart.position), Color.magenta);
+        Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position), Color.magenta);
+        Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position), Color.magenta);
+
         if (other.gameObject.tag == "Player")
         {
             Player check = other.GetComponent<Player>();
             Target = check.gameObject;
             if (!check.GetDead()) {
-                // Cast a ray straight down.
-                RaycastHit2D hit = Physics2D.Raycast(RayStart.position, (other.gameObject.transform.position - RayStart.position), maxDis);
-                RaycastHit2D hit2 = Physics2D.Raycast(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position), maxDis);
-                RaycastHit2D hit1 = Physics2D.Raycast(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position), maxDis);
+                
+                Ray ray = new Ray(RayStart.position, (other.gameObject.transform.position - RayStart.position));
+                Ray ray1 = new Ray(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position));
+                Ray ray2 = new Ray(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position));
 
-                Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position), Color.magenta);
-                Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position), Color.magenta);
-                //print(hit.collider.GetComponent<Transform>().gameObject);
-                //print(hit1.collider.gameObject.tag);
-                //print(hit2.collider.gameObject.tag);
+                RaycastHit hit, hit1, hit2;
+
+                Physics.Raycast(ray, out hit, maxDis);
+                Physics.Raycast(ray1, out hit1, maxDis);
+                Physics.Raycast(ray2, out hit2, maxDis);
 
                 // If it hits something...
-                if ((hit.collider != null && hit.collider.gameObject.tag == "Player") || (hit1.collider != null && hit1.collider.gameObject.tag == "Player") || (hit2.collider != null && hit2.collider.gameObject.tag == "Player"))
+                if ((hit.collider != null && hit.collider.gameObject.tag == "Player") 
+                    || (hit1.collider != null && hit1.collider.gameObject.tag == "Player") 
+                    || (hit2.collider != null && hit2.collider.gameObject.tag == "Player"))
                 {
                     print("HIT!");
                     LastSeen = hit.collider.gameObject.transform.position;
@@ -47,7 +56,7 @@ public class EnemyLOS : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
