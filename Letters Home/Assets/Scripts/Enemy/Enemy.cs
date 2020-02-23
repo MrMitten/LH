@@ -1,80 +1,95 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
     EnemyLOS los;
-    Patrol patrol;
+    PatrolAI patrol;
+
+    [HideInInspector]
+    public GameObject Target;
+    private NavMeshAgent agent;
 
     public float domeTimer = 1.0f;
-    public GameObject Target;
-    public float ganderSpeed;
+    public float lookTime = 2.0f;
+    public float ganderSpeed = 0.75f;
     [HideInInspector]
-    public bool isWaiting = false;
     public bool isLooking = false;
-    public float lookTime = 5.0f;
+    [HideInInspector]
+    public bool isSearching = false;
     private float ltimer = 0.0f;
-    private Vector2 prePos;
+    private float originalSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
         los = GetComponent<EnemyLOS>();
-        patrol = GetComponent<Patrol>();
+        patrol = GetComponent<PatrolAI>();
+        agent = GetComponent<NavMeshAgent>();
+        originalSpeed = agent.speed;
     }
 
     // Update is called once per frame
     void FixedUpdate()
-    {
-        if (los.canSee && !isWaiting && los.Target != null && !los.Target.GetComponent<Player>().GetDead())
+    {   
+        // If this enemy can see the Player, stop patrolling and get ready to shoot.
+        if (los.canSee && los.Target != null && !los.Target.GetComponent<Player>().GetDead())
         {
             Target = los.Target;
             patrol.isPatroling = false;
-            patrol.isFollowing = true;
+            patrol.stopMoving = true;
             Invoke("ShootTarget", domeTimer);
-            isWaiting = true;
-            isLooking = false;
         }
-        else if (!isWaiting && Target != null && !isLooking)
+        // If this enemy saw the Player, but can't anymore, they will walk to the last seen location of the Player.
+        else if (!los.canSee && isSearching && Target != null && transform.position.x != los.LastSeen.x) // && ltimer > (Time.time + lookTime / 2))
         {
-            Target = null;
-            patrol.isFollowing = false;
+            agent.SetDestination(los.LastSeen);
         }
-
-        if(los.canSee == false && isLooking && Target != null && ltimer > (Time.time + lookTime/2))
+        // If the enemy has reached the last seen location of the Player, wait for the look timer to run out, then go back to patrolling.
+        else if (!los.canSee && isSearching && Target != null && transform.position.x == los.LastSeen.x)
         {
-            transform.position = Vector2.Lerp(new Vector2(los.LastSeen.x, prePos.y), prePos, (ltimer - (Time.time + (lookTime/2)))/(lookTime/2));
+            isSearching = false;
+            isLooking = true;
+            ltimer = Time.time + lookTime;
+            agent.ResetPath();
         }
-        else if(los.canSee == false && isLooking && Target != null)
+        // This enemy is at the last seen location of the Player, and is looking around for them.
+        else if (!los.canSee && isLooking && Target != null && ltimer > Time.time)
         {
-            // Looking Animation
             // TODO
+            // Looking Animation
         }
-        print(los.canSee);
+        // This enemy is at the last seen location of the Player, and has finished looking for them.
+        else if (!los.canSee && isLooking && Target != null && Time.time > ltimer)
+        {
+            patrol.reset = true;
+            patrol.isPatroling = true;
+            isLooking = false;
+            Target = null;
+            agent.speed = originalSpeed;
+        }
     }
 
     void ShootTarget()
     {
-        
         if (los.canSee)
         {
+            // Kill the Player
             Target.GetComponent<Player>().SetDead();
             Debug.Log("KiLL!");
-            patrol.isFollowing = false;
+
+            // Reset patrol
+            patrol.isPatroling = true;
+            patrol.reset = true;
+            agent.speed = originalSpeed;
         }
         else
         {
-            isLooking = true;
-            Invoke("StopTheLookin", lookTime);
-            prePos = transform.position;
-            ltimer = Time.time + lookTime;
+            isSearching = true;
+            agent.speed = ganderSpeed;
         }
-        isWaiting = false;
     }
-
-    void StopTheLookin()
-    {
-        isLooking = false;
-    }
+    
 }
