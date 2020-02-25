@@ -1,9 +1,1 @@
-sceneSetups:
-<<<<<<< HEAD
-- path: Assets/Scenes/KindraScene.unity
-=======
-- path: Assets/Scenes/Enemy Testing.unity
->>>>>>> 5b742874c2d98946777789302fdae05ff3de3463
-  isLoaded: 1
-  isActive: 1
-  isSubScene: 0
+sceneSetups: []
