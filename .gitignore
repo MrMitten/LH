@@ -2,7 +2,13 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
-*.dwlt
+Letters Home/[Ll]ibrary/
+Letters Home/[Tt]emp/
+Letters Home/[Oo]bj/
+Letters Home/[Bb]uild/
+Letters Home/[Bb]uilds/
+Letters Home/[Ll]ogs/
+Letters Home/[Mm]emoryCaptures/
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -43,6 +49,7 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+*.dwlt
 
 # Unity3D generated meta files
 *.pidb.meta
