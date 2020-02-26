@@ -34,28 +34,31 @@ public class PatrolAI : MonoBehaviour
     {
         if (isPatroling)
         {
+            print(goingTo);
             if (reset)
             {
                 agent.SetDestination(pos1.position);
                 goingTo = 1;
                 reset = false;
             }
-            else if (goingTo == 1 && transform.position.x != pos1.position.x)
+            else if (goingTo == 1 && transform.position.x >= pos1.position.x+1)
             {
                 agent.SetDestination(pos1.position);
             }
-            else if (goingTo == 1 && transform.position.x == pos1.position.x)
+            else if (goingTo == 1 && transform.position.x <= pos1.position.x + 1)
             {
                 goingTo = 2;
+                transform.rotation.eulerAngles.Set(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 180f, transform.rotation.eulerAngles.z);
                 agent.SetDestination(pos2.position);
             }
-            else if (goingTo == 2 && transform.position.x != pos2.position.x)
+            else if (goingTo == 2 && transform.position.x <= pos2.position.x-1)
             {
                 agent.SetDestination(pos2.position);
             }
-            else if (goingTo == 2 && transform.position.x == pos2.position.x)
+            else if (goingTo == 2 && transform.position.x >= pos2.position.x - 1)
             {
                 goingTo = 1;
+                transform.rotation.eulerAngles.Set(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 180f, transform.rotation.eulerAngles.z);
                 agent.SetDestination(pos1.position);
             }
         }

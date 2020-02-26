@@ -12306,10 +12306,9 @@ MonoBehaviour:
   crouch: 0
   crawl: 0
   Up: 0
-  BoxSizes:
-  - {x: 0.9554257, y: 3.447608}
-  - {x: 1, y: 2}
-  - {x: 3.447608, y: 0.9554257}
+  isVaulting: 0
+  totalVaultTime: 0
+  CapsuleSizes: []
   mine: {fileID: 0}
   climbSpeed: 3
 --- !u!114 &1614788781
