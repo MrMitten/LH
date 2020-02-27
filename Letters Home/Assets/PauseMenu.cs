@@ -21,12 +21,17 @@ public class PauseMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pauseUI.SetActive(false);
         if (firstLoad)
+        {
             Time.timeScale = 1f;
+            firstLoad = false;
+        }
         else
+        {
             Resume();
-        firstLoad = false;
+        }
+        Debug.Log("pausemenu");
+        pauseUI.SetActive(false);
     }
 
     // Update is called once per frame
