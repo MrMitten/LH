@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,33 +6,57 @@ public class Enemy : MonoBehaviour
 {
     EnemyLOS los;
     PatrolAI patrol;
-
+    
     [HideInInspector]
     public GameObject Target;
+    public GameObject enemySprite;
     private NavMeshAgent agent;
 
-    public float domeTimer = 1.0f;
-    public float lookTime = 2.0f;
+    public float speed = 3f;
     public float ganderSpeed = 0.75f;
     [HideInInspector]
     public bool isLooking = false;
     [HideInInspector]
     public bool isSearching = false;
+
+    public float domeTimer = 1.0f;
+    public float lookTime = 2.0f;
     private float ltimer = 0.0f;
-    private float originalSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
-        los = GetComponent<EnemyLOS>();
-        patrol = GetComponent<PatrolAI>();
-        agent = GetComponent<NavMeshAgent>();
-        originalSpeed = agent.speed;
+        if (GetComponent<EnemyLOS>() != null)
+        {
+            los = GetComponent<EnemyLOS>();
+        }
+        if (GetComponent<PatrolAI>() != null)
+        {
+            patrol = GetComponent<PatrolAI>();
+        }
+        if (GetComponent<NavMeshAgent>() != null)
+        {
+            agent = GetComponent<NavMeshAgent>();
+            agent.speed = speed;
+        }
     }
 
     // Update is called once per frame
-    void FixedUpdate()
-    {   
+    void Update()
+    {
+        enemySprite.transform.position = this.transform.position;
+
+        if (los && patrol && agent)
+        {
+            patrollingLogic();
+        }
+    }
+
+    /// <summary>
+    /// Uses information from the PatrolAI script and EnemyLOS script to control the behavior of this Enemy.
+    /// </summary>
+    private void patrollingLogic()
+    {
         // If this enemy can see the Player, stop patrolling and get ready to shoot.
         if (los.canSee && los.Target != null && !los.Target.GetComponent<Player>().GetDead())
         {
@@ -42,13 +65,8 @@ public class Enemy : MonoBehaviour
             patrol.stopMoving = true;
             Invoke("ShootTarget", domeTimer);
         }
-        // If this enemy saw the Player, but can't anymore, they will walk to the last seen location of the Player.
-        else if (!los.canSee && isSearching && Target != null && transform.position.x != los.LastSeen.x) // && ltimer > (Time.time + lookTime / 2))
-        {
-            agent.SetDestination(los.LastSeen);
-        }
         // If the enemy has reached the last seen location of the Player, wait for the look timer to run out, then go back to patrolling.
-        else if (!los.canSee && isSearching && Target != null && transform.position.x == los.LastSeen.x)
+        else if (!los.canSee && isSearching && Target != null && agent.remainingDistance <= 0)
         {
             isSearching = false;
             isLooking = true;
@@ -68,10 +86,13 @@ public class Enemy : MonoBehaviour
             patrol.isPatroling = true;
             isLooking = false;
             Target = null;
-            agent.speed = originalSpeed;
+            agent.speed = speed;
         }
     }
 
+    /// <summary>
+    /// Helper method used for killing the Player.
+    /// </summary>
     void ShootTarget()
     {
         if (los.canSee)
@@ -83,13 +104,15 @@ public class Enemy : MonoBehaviour
             // Reset patrol
             patrol.isPatroling = true;
             patrol.reset = true;
-            agent.speed = originalSpeed;
+            agent.speed = speed;
         }
         else
         {
             isSearching = true;
             agent.speed = ganderSpeed;
+            // Go to the last seen location of the player.
+            agent.SetDestination(los.LastSeen);
         }
     }
-    
+
 }

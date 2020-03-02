@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
@@ -8,14 +6,16 @@ using UnityEngine.AI;
 /// </summary>
 public class PatrolAI : MonoBehaviour
 {
-    // Each object needs to have a Trigger Collider and a RigidBody
+    [HideInInspector]
+    public Enemy me;
+
     public Transform pos1;
     public Transform pos2;
 
     private NavMeshAgent agent;
     [HideInInspector]
     public bool reset = true;
-    private float goingTo;
+    private float goingTo = 1;
     [HideInInspector]
     public bool stopMoving = false;
     [HideInInspector]
@@ -27,6 +27,7 @@ public class PatrolAI : MonoBehaviour
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
+        me = gameObject.GetComponent<Enemy>();
     }
 
     // Update is called once per frame
@@ -34,32 +35,34 @@ public class PatrolAI : MonoBehaviour
     {
         if (isPatroling)
         {
-            print(goingTo);
             if (reset)
             {
                 agent.SetDestination(pos1.position);
                 goingTo = 1;
                 reset = false;
+                spriteDir(pos1);
             }
-            else if (goingTo == 1 && transform.position.x >= pos1.position.x+1)
+            else if (goingTo == 1 && agent.remainingDistance > 0)
             {
                 agent.SetDestination(pos1.position);
+                spriteDir(pos1);
             }
-            else if (goingTo == 1 && transform.position.x <= pos1.position.x + 1)
-            {
+            else if (goingTo == 1 && agent.remainingDistance <= 0)
+            {   
                 goingTo = 2;
-                transform.rotation.eulerAngles.Set(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 180f, transform.rotation.eulerAngles.z);
                 agent.SetDestination(pos2.position);
+                me.enemySprite.gameObject.GetComponent<SpriteRenderer>().flipX = false;
             }
-            else if (goingTo == 2 && transform.position.x <= pos2.position.x-1)
+            else if (goingTo == 2 && agent.remainingDistance > 0)
             {
                 agent.SetDestination(pos2.position);
+                spriteDir(pos2);
             }
-            else if (goingTo == 2 && transform.position.x >= pos2.position.x - 1)
+            else if (goingTo == 2 && agent.remainingDistance <= 0)
             {
                 goingTo = 1;
-                transform.rotation.eulerAngles.Set(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 180f, transform.rotation.eulerAngles.z);
                 agent.SetDestination(pos1.position);
+                me.enemySprite.gameObject.GetComponent<SpriteRenderer>().flipX = true;
             }
         }
         else if (!isPatroling && stopMoving)
@@ -69,4 +72,21 @@ public class PatrolAI : MonoBehaviour
         }
         
     }
+
+    /// <summary>
+    /// Used to properly orient the direction of the Enemy sprite.
+    /// </summary>
+    /// <param name="pos"></param>
+    private void spriteDir(Transform pos)
+    {
+        if (this.transform.position.x > pos.transform.position.x)
+        {
+            me.enemySprite.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            me.enemySprite.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+    }
+    
 }
