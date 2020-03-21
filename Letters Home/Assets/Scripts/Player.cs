@@ -7,7 +7,18 @@ public class Player : MonoBehaviour
     bool isDead = false;
     PlayerMovement moveyBoi;
 
+    private RaycastHit hit;
     public Item myItem;
+    public bool CanShoot = false;
+    public float reloadTime = 1f;
+    public float shotTime = 0.5f;
+    public bool CanReload = false;
+    private float shottimer;
+    private float reloadtimer;
+    public int maxAmmo = 60;
+    public int MagAmmo = 0;
+    public int MagSize = 1;
+    public int ammo = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -18,8 +29,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isDead && moveyBoi.m_dead != true) {
-            moveyBoi.m_dead = true; }
+        if (isDead && moveyBoi.m_dead != true)
+        {
+            moveyBoi.m_dead = true;
+        }
 
         if (Input.GetButtonDown("UseItem"))
         {
@@ -27,8 +40,76 @@ public class Player : MonoBehaviour
             InvokeItem();
         }
 
+        if (ammo < 0)
+        {
+            ammo = 0;
+        }
+        else if (ammo > maxAmmo)
+        {
+            ammo = maxAmmo;
+        }
+        if (MagAmmo > MagSize)
+        {
+            MagAmmo = MagSize;
+        }
+        else if (MagAmmo < 0)
+        {
+            MagAmmo = 0;
+        }
+        if (MagAmmo <= 0 && CanReload && reloadtimer < Time.time)
+        {
+            CanReload = false;
+            reloadtimer = Time.time + reloadTime;
+            Invoke("Reload", reloadTime);
+        }
 
+        if (CanShoot && shottimer < Time.time)
+        {
+            Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            float intersectionDistance = 0f;
+
+
+            if (Input.GetMouseButtonDown(0) && MagAmmo > 0)
+            {
+                MagAmmo -= 1;
+                shottimer = Time.time + shotTime;
+                if (Physics.Raycast(cameraRay, out hit, 10000.0f))
+                {
+                    //print("hit at:" + hit.point);
+                    if (hit.collider.tag == "Enemy")
+                    {
+                        print("Shot a bad guy");
+                    }
+
+
+                }
+                print("Took a shot");
+
+            }
+            if (Input.GetButtonDown("Reload") && CanReload == false)
+            {
+                CanReload = true;
+                print("Reloading!");
+            }
+        }
     }
+
+    public void Reload()
+    {
+        if (MagSize <= ammo)
+        {
+            MagAmmo = MagSize;
+            ammo -= MagSize;
+        }
+        else
+        {
+            MagAmmo = ammo;
+            ammo = 0;
+        }
+        print("Finished Reloading");
+    }
+
 
     public void EquipItemPlayer(Item toQuip)
     {
