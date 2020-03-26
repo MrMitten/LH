@@ -7,6 +7,8 @@ public class Shooter : MonoBehaviour
 {
     public Image img;
     public Player play;
+    public Text Ammo;
+    public Text Mag;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,10 +20,22 @@ public class Shooter : MonoBehaviour
     {
         if (play.CanShoot)
         {
+            if (!play.Reloading)
+                Mag.text = "" + play.MagAmmo;
+            else
+                Mag.text = "R";
+
+            Ammo.text = "" + play.ammo;
+            Mag.enabled = true;
+            Ammo.enabled = true;
             img.enabled = true;
             img.gameObject.transform.position = Input.mousePosition;
         }
         else
+        {
+            Mag.enabled = false;
+            Ammo.enabled = false;
             img.enabled = false;
+        }
     }
 }

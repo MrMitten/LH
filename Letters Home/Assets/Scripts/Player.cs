@@ -13,12 +13,16 @@ public class Player : MonoBehaviour
     public float reloadTime = 1f;
     public float shotTime = 0.5f;
     public bool CanReload = false;
+    public bool Reloading = false;
     private float shottimer;
     private float reloadtimer;
     public int maxAmmo = 60;
     public int MagAmmo = 0;
     public int MagSize = 1;
     public int ammo = 0;
+
+    //Debug only
+    Ray newRay;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +33,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.DrawRay(newRay.origin, newRay.direction);
         if (isDead && moveyBoi.m_dead != true)
         {
             moveyBoi.m_dead = true;
@@ -56,13 +61,13 @@ public class Player : MonoBehaviour
         {
             MagAmmo = 0;
         }
-        if (MagAmmo <= 0 && CanReload && reloadtimer < Time.time)
+        if (CanReload && reloadtimer < Time.time)
         {
             CanReload = false;
             reloadtimer = Time.time + reloadTime;
+            Reloading = true;
             Invoke("Reload", reloadTime);
         }
-
         if (CanShoot && shottimer < Time.time)
         {
             Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -79,7 +84,29 @@ public class Player : MonoBehaviour
                     //print("hit at:" + hit.point);
                     if (hit.collider.tag == "Enemy")
                     {
-                        print("Shot a bad guy");
+                        Enemy toHit = hit.collider.GetComponentInParent<Enemy>();
+                        RaycastHit hit2;
+                        newRay = new Ray((this.transform.position), (toHit.transform.position - this.transform.position));
+                        if(Physics.Raycast(newRay, out hit2, 50.0f));
+                        {
+                            if(hit2.collider.tag == "Enemy")
+                            {
+                                print(hit.collider.name);
+                                if (hit.collider.name == "Head")
+                                {
+                                    toHit.ShotSpots[2] = true;
+                                }
+                                else if(hit.collider.name == "Legs")
+                                {
+                                    toHit.ShotSpots[1] = true;
+                                }
+                                else
+                                {
+                                    toHit.ShotSpots[0] = true;
+                                }
+                                toHit.Dead = true;
+                            }
+                        }
                     }
 
 
@@ -93,10 +120,15 @@ public class Player : MonoBehaviour
                 print("Reloading!");
             }
         }
+        if (isDead)
+        {
+            CanShoot = false;
+        }
     }
 
     public void Reload()
     {
+        Reloading = false;
         if (MagSize <= ammo)
         {
             MagAmmo = MagSize;
