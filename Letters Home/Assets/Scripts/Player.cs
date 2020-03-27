@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     bool isDead = false;
     PlayerMovement moveyBoi;
+    public bool dead() { return isDead; }
 
     private RaycastHit hit;
     public Item myItem;
