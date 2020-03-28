@@ -33,7 +33,8 @@ public class Shooter : MonoBehaviour
         else
         {
             Ammo.text = "" + play.ammo;
-            Mag.enabled = false;
+            Mag.text = "" + play.MagAmmo;
+            //Mag.enabled = false;
             //Ammo.enabled = false;
             img.enabled = false;
         }
