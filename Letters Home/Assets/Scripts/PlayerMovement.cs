@@ -31,10 +31,15 @@ public class PlayerMovement : MonoBehaviour
     private float spriteHeight;
     public float crouchHeight;
     public Transform spriteT;
+    private float ctimer;
 
 
     [HideInInspector]
     public float climbSpeed = 3;
+    private bool precrawl;
+
+    private bool lb;
+    private bool crb;
 
     // Start is called before the first frame update
     void Start()
@@ -60,66 +65,32 @@ public class PlayerMovement : MonoBehaviour
 
         if (!m_dead && !UI_InvFinder.me.Dialogue)
         {
+
+
             MoveVector = Vector3.zero;
 
             MoveVector += new Vector3(Input.GetAxis("Horizontal") * MoveSpeed, 0, Input.GetAxis("Vertical") * MoveSpeed);
 
             me.transform.position += new Vector3(MoveVector.x, MoveVector.y, MoveVector.z) * Time.deltaTime;
 
-
-
-            //Double tap code.
-            /*if (timerS < Time.time && Input.GetKeyDown(KeyCode.S))
-            {
-                timerS  = Time.time + doubleTapTimer;
-            }
-            else if (timerS > Time.time && Input.GetKeyDown(KeyCode.S))
-            {
-                timerS = Time.time;
-                ToggleDown();
-            }
-
-            if (timerW < Time.time && Input.GetKeyDown(KeyCode.W))
-            {
-                timerW = Time.time + doubleTapTimer;
-            }
-            else if (timerW > Time.time && Input.GetKeyDown(KeyCode.W))
-            {
-                timerW = Time.time;
-                ToggleUp();
-            }*/
-            /*if (CanChangeLanes && !attached && (Input.GetButtonDown("DownLevel")))
-            {
-                if (Lane == 1)
-                {
-                    this.transform.position = new Vector2(transform.position.x, transform.position.y - 0.55f);
-                }
-                Lane = 0;
-                
-            }
-           
-
-            if(CanChangeLanes && !attached && (Input.GetButtonDown("UpLevel")))
-            {
-                if (Lane == 0)
-                {
-                    this.transform.position = new Vector2(transform.position.x, transform.position.y + 0.55f);
-                }
-                Lane = 1;
-                
-            }*/
-
-            if (Input.GetButtonDown("Crawl"))
+            if (Input.GetButton("Crawl") && !crb)
             {
                 timerS = Time.time;
                 ToggleCrawl();
+                crb = true;
             }
-            else if (Input.GetButtonDown("Crouch"))
+            if (Input.GetButtonUp("Crawl"))
+                crb = false;
+
+            if (Input.GetButton("Crouch") && !lb)
             {
                 timerW = Time.time;
                 ToggleCrouch();
+                lb = true;
             }
-
+            if (Input.GetButtonUp("Crouch"))
+                lb = false;
+            
 
             if (canVault && (Input.GetButtonDown("Vault")))
             {
@@ -146,9 +117,10 @@ public class PlayerMovement : MonoBehaviour
                 Anim.SetBool("Walkin", false);
 
 
-            if (crawl && mine.center.y != CapsuleSizes[2][0])
+            if (crawl)
             {
-                spriteT.localPosition = new Vector3(0, crouchHeight, 0);
+                
+                spriteT.localPosition = Vector3.Lerp(new Vector3(0, crouchHeight, 0), new Vector3(0, spriteHeight, 0), ctimer - Time.time);
                 mine.center = new Vector3(0, CapsuleSizes[2][0], 0);
                 mine.height = CapsuleSizes[2][1];
                 mine.direction = 0;
@@ -156,27 +128,44 @@ public class PlayerMovement : MonoBehaviour
 
                 Anim.SetBool("Crawlin", true);
                 Anim.SetBool("Crouch", false);
+                MoveSpeed = 1f;
             }
-            else if (crouch && mine.center.y != CapsuleSizes[1][0])
+            else if (crouch)
             {
-                spriteT.localPosition = new Vector3(0, spriteHeight, 0);
+                if (precrawl && ctimer > Time.time)
+                {
+                    spriteT.localPosition = Vector3.Lerp(new Vector3(0, spriteHeight, 0), new Vector3(0, crouchHeight, 0), (ctimer - Time.time)/.25f);
+                }
+                else if(precrawl)
+                {
+                    precrawl = false;
+                }
                 mine.center = new Vector3(0, CapsuleSizes[1][0], 0);
                 mine.height = CapsuleSizes[1][1];
                 mine.direction = 1;
                 Anim.SetBool("Crawlin", false);
                 Anim.SetBool("Crouch", true);
+                MoveSpeed = 1.5f;
                 //print("Crouching!!");
 
             }
-            else if (!crouch && !crawl && mine.center.y != CapsuleSizes[0][0])
+            else if (!crouch && !crawl)
             {
-                spriteT.localPosition = new Vector3(0, spriteHeight, 0);
+                if (precrawl && ctimer > Time.time)
+                {
+                    spriteT.localPosition = Vector3.Lerp(new Vector3(0, spriteHeight, 0), new Vector3(0, crouchHeight, 0), (ctimer - Time.time)/.25f);
+                }
+                else if (precrawl)
+                {
+                    precrawl = false;
+                }
                 mine.height = CapsuleSizes[0][1];
                 mine.center = new Vector3(0, CapsuleSizes[0][0], 0);
                 Anim.SetBool("Crawlin", false);
                 Anim.SetBool("Crouch", false);
-                print("Not Crouching!!");
+                //print("Not Crouching!!");
                 mine.direction = 1;
+                MoveSpeed = 2.25f;
             }
             //Condition for the crawling
         }
@@ -222,13 +211,21 @@ public class PlayerMovement : MonoBehaviour
     {
         crawl = !crawl;
         crouch = false;
-
+        if(crawl)
+            ctimer = Time.time + 1f;
+        else
+            ctimer = Time.time + 0.25f;
+        if (crawl == true)
+        {
+            precrawl = true;
+        }
     }
 
     void ToggleCrouch()
     {
         crouch = !crouch;
         crawl = false;
+        ctimer = Time.time + 0.25f;
     }
 
 
