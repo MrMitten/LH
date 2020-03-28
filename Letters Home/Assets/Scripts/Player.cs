@@ -22,6 +22,9 @@ public class Player : MonoBehaviour
     public int MagSize = 1;
     public int ammo = 0;
 
+    [SerializeField]
+    private Sprite baseItem;
+
     //Debug only
     Ray newRay;
 
@@ -34,6 +37,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(myItem == null && UI_InvFinder.me.ItemImage.sprite != baseItem)
+        {
+            UI_InvFinder.me.ItemImage.sprite = baseItem;
+            UI_InvFinder.me.ItemText.text = "";
+        }
+
         Debug.DrawRay(newRay.origin, newRay.direction);
         if (isDead && moveyBoi.m_dead != true)
         {
@@ -154,6 +163,11 @@ public class Player : MonoBehaviour
         }
         myItem = toQuip;
         myItem.Equip();
+    }
+
+    public void DequipCurrentItem()
+    {
+        myItem.Dequip();
     }
 
     public void Reset()

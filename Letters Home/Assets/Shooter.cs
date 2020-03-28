@@ -25,7 +25,6 @@ public class Shooter : MonoBehaviour
             else
                 Mag.text = "R";
 
-            Ammo.text = "" + play.ammo;
             Mag.enabled = true;
             Ammo.enabled = true;
             img.enabled = true;
@@ -33,8 +32,9 @@ public class Shooter : MonoBehaviour
         }
         else
         {
+            Ammo.text = "" + play.ammo;
             Mag.enabled = false;
-            Ammo.enabled = false;
+            //Ammo.enabled = false;
             img.enabled = false;
         }
     }

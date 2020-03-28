@@ -28,6 +28,10 @@ public class PlayerMovement : MonoBehaviour
     public static bool CanChangeLanes = true;
 
     private bool swapped = false;
+    private float spriteHeight;
+    public float crouchHeight;
+    public Transform spriteT;
+
 
     [HideInInspector]
     public float climbSpeed = 3;
@@ -36,8 +40,12 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         me = GetComponent<Rigidbody>();
-        Anim = GetComponent<Animator>();
+        Anim = GetComponentInChildren<Animator>();
         mine = GetComponent<CapsuleCollider>();
+        //spriteT= GetComponentInChildren<Transform>();
+        spriteHeight = 0 + spriteT.localPosition.y;
+        crouchHeight = 0 + spriteHeight - crouchHeight;
+
     }
 
     // Update is called once per frame
@@ -47,14 +55,14 @@ public class PlayerMovement : MonoBehaviour
         {
             crawl = false;
             crouch = false;
-            transform.Translate(new Vector3(0,Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
+            transform.Translate(new Vector3(0, Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
         }
-        
+
         if (!m_dead && !UI_InvFinder.me.Dialogue)
         {
             MoveVector = Vector3.zero;
 
-            MoveVector += new Vector3(Input.GetAxis("Horizontal") * MoveSpeed, 0, Input.GetAxis("Vertical")*MoveSpeed);
+            MoveVector += new Vector3(Input.GetAxis("Horizontal") * MoveSpeed, 0, Input.GetAxis("Vertical") * MoveSpeed);
 
             me.transform.position += new Vector3(MoveVector.x, MoveVector.y, MoveVector.z) * Time.deltaTime;
 
@@ -106,23 +114,23 @@ public class PlayerMovement : MonoBehaviour
                 timerS = Time.time;
                 ToggleCrawl();
             }
-            else if(Input.GetButtonDown("Crouch"))
+            else if (Input.GetButtonDown("Crouch"))
             {
                 timerW = Time.time;
                 ToggleCrouch();
             }
-            
+
 
             if (canVault && (Input.GetButtonDown("Vault")))
             {
-                if(transform.localScale.x == 1)
+                if (transform.localScale.x == 1)
                     transform.position = VaultPos.position;
                 else
                     transform.position = new Vector3(VaultPos.position.x - 5, VaultPos.position.y, VaultPos.position.z);
                 canVault = false;
             }
 
-            
+
 
             if (Input.GetAxis("Horizontal") < 0 || Input.GetAxis("Vertical") > 0)
             {
@@ -138,8 +146,9 @@ public class PlayerMovement : MonoBehaviour
                 Anim.SetBool("Walkin", false);
 
 
-            if(crawl && mine.center.y != CapsuleSizes[2][0])
+            if (crawl && mine.center.y != CapsuleSizes[2][0])
             {
+                spriteT.localPosition = new Vector3(0, crouchHeight, 0);
                 mine.center = new Vector3(0, CapsuleSizes[2][0], 0);
                 mine.height = CapsuleSizes[2][1];
                 mine.direction = 0;
@@ -150,16 +159,18 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (crouch && mine.center.y != CapsuleSizes[1][0])
             {
+                spriteT.localPosition = new Vector3(0, spriteHeight, 0);
                 mine.center = new Vector3(0, CapsuleSizes[1][0], 0);
                 mine.height = CapsuleSizes[1][1];
                 mine.direction = 1;
                 Anim.SetBool("Crawlin", false);
                 Anim.SetBool("Crouch", true);
                 //print("Crouching!!");
-               
+
             }
             else if (!crouch && !crawl && mine.center.y != CapsuleSizes[0][0])
             {
+                spriteT.localPosition = new Vector3(0, spriteHeight, 0);
                 mine.height = CapsuleSizes[0][1];
                 mine.center = new Vector3(0, CapsuleSizes[0][0], 0);
                 Anim.SetBool("Crawlin", false);
@@ -173,12 +184,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (m_dead == true)
             {
-                Anim.SetBool("Crawlin", true);
+                Anim.SetBool("Dead", true);
             }
-            else
-            {
-                Anim.SetBool("Crawlin", false);
-            }
+            Anim.SetBool("Crawlin", false);
             Anim.SetBool("Walkin", false);
             Anim.SetBool("Crouch", false);
         }
@@ -186,13 +194,14 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetSpeed(int nes)
     {
-        MoveSpeed = nes;   
+        MoveSpeed = nes;
     }
 
 
     void OnTriggerEnter(Collider col)
     {
-        if(col.gameObject.tag == "Vaultable") {
+        if (col.gameObject.tag == "Vaultable")
+        {
             canVault = true;
             print("found1");
             VaultPos = col.gameObject.GetComponent<Vaultable>().VaultEndpoint;
@@ -209,7 +218,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    void ToggleCrawl() {
+    void ToggleCrawl()
+    {
         crawl = !crawl;
         crouch = false;
 

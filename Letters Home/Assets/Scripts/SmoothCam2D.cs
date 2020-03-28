@@ -9,12 +9,17 @@ public class SmoothCam2D : MonoBehaviour
     public Vector2 Offset;
     public static Transform findCam;
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         if(findCam == null)
         {
             findCam = this.gameObject.transform;
         }
+        
+    }
+    void Start()
+    {
         //BoundsLR[0] += transform.position.x;
     }
 
