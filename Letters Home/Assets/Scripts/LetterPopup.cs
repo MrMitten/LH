@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class LetterPopup : MonoBehaviour
 {
-
-    public GameObject letterUI;
-    public Player player;
+    private GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
-        letterUI.SetActive(false);   
+        gameObject.SetActive(false);  
+        player = SmoothCam2D.findCam.GetComponent<SmoothCam2D>().Target;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(player.dead() == true) // if player == DEAD
+        if(player.GetComponent<Player>().GetDead() == true) // if player == DEAD
         {
-            letterUI.SetActive(true);
+            gameObject.SetActive(true);
 
         }
     }

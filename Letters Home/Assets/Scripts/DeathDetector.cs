@@ -32,4 +32,9 @@ public class DeathDetector : MonoBehaviour
     {
         Settee.SetActive(true);
     }
+
+    private void OnGUI()
+    {
+        
+    }
 }

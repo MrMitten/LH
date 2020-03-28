@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5482729626948897313}
   - component: {fileID: 5482729626948897318}
   - component: {fileID: 5482729626948897319}
+  - component: {fileID: 4761001805353746453}
   m_Layer: 5
   m_Name: LetterCanvas
   m_TagString: Untagged
@@ -139,6 +140,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4761001805353746453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5482729626948897316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a009eaa011e3334994ef864805387a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5482729627396464100
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +304,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5482729627611565221}
   - component: {fileID: 5482729627611565223}
+  - component: {fileID: 8686282293313446702}
   - component: {fileID: 5482729627611565220}
   m_Layer: 5
   m_Name: Text
@@ -326,6 +340,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5482729627611565242}
   m_CullTransparentMesh: 0
+--- !u!114 &8686282293313446702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5482729627611565242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4882db0eb15b1044e900f081b675113d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  script: {fileID: 5482729627611565220}
+  speed: 10
 --- !u!114 &5482729627611565220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +504,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5482729628456775973}
   - component: {fileID: 5482729628456775972}
-  - component: {fileID: 5482729628456775975}
   m_Layer: 5
   m_Name: LevelLoader
   m_TagString: Untagged
@@ -515,20 +542,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70e72d88e0bb67f48a3573249ae534e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5482729628456775975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5482729628456775994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9150e68784c073349b7a7a5874574ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  letterUI: {fileID: 5482729626948897316}
-  player: {fileID: 0}
 --- !u!1 &5482729628731750436
 GameObject:
   m_ObjectHideFlags: 0
