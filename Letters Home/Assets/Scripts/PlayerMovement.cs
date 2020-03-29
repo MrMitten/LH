@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     Animator Anim;
 
     private bool canVault;
-    private Transform VaultPos;
+    private Vaultable VaultPos;
     private float timerS;
     private float timerW;
     private float doubleTapTimer = 0.35f;
@@ -28,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
     public static bool CanChangeLanes = true;
 
     private bool swapped = false;
+    private bool vaulting = false;
+    private float vaultTimer = 0f;
+    private Vector3 prePos;
 
     [HideInInspector]
     public float climbSpeed = 3;
@@ -50,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
             transform.Translate(new Vector3(0,Input.GetAxis("Vertical"), 0) * Time.deltaTime * climbSpeed);
         }
         
-        if (!m_dead && !UI_InvFinder.me.Dialogue)
+        if (!m_dead && !UI_InvFinder.me.Dialogue && !vaulting)
         {
             MoveVector = Vector3.zero;
 
@@ -58,48 +61,6 @@ public class PlayerMovement : MonoBehaviour
 
             me.transform.position += new Vector3(MoveVector.x, MoveVector.y, MoveVector.z) * Time.deltaTime;
 
-
-
-            //Double tap code.
-            /*if (timerS < Time.time && Input.GetKeyDown(KeyCode.S))
-            {
-                timerS  = Time.time + doubleTapTimer;
-            }
-            else if (timerS > Time.time && Input.GetKeyDown(KeyCode.S))
-            {
-                timerS = Time.time;
-                ToggleDown();
-            }
-
-            if (timerW < Time.time && Input.GetKeyDown(KeyCode.W))
-            {
-                timerW = Time.time + doubleTapTimer;
-            }
-            else if (timerW > Time.time && Input.GetKeyDown(KeyCode.W))
-            {
-                timerW = Time.time;
-                ToggleUp();
-            }*/
-            /*if (CanChangeLanes && !attached && (Input.GetButtonDown("DownLevel")))
-            {
-                if (Lane == 1)
-                {
-                    this.transform.position = new Vector2(transform.position.x, transform.position.y - 0.55f);
-                }
-                Lane = 0;
-                
-            }
-           
-
-            if(CanChangeLanes && !attached && (Input.GetButtonDown("UpLevel")))
-            {
-                if (Lane == 0)
-                {
-                    this.transform.position = new Vector2(transform.position.x, transform.position.y + 0.55f);
-                }
-                Lane = 1;
-                
-            }*/
 
             if (Input.GetButtonDown("Crawl"))
             {
@@ -115,11 +76,10 @@ public class PlayerMovement : MonoBehaviour
 
             if (canVault && (Input.GetButtonDown("Vault")))
             {
-                if(transform.localScale.x == 1)
-                    transform.position = VaultPos.position;
-                else
-                    transform.position = new Vector3(VaultPos.position.x - 5, VaultPos.position.y, VaultPos.position.z);
                 canVault = false;
+                vaulting = true;
+                vaultTimer = Time.time + VaultPos.vaultSpeed;
+                prePos = transform.position;
             }
 
             
@@ -169,6 +129,26 @@ public class PlayerMovement : MonoBehaviour
             }
             //Condition for the crawling
         }
+
+        else if (vaulting && vaultTimer > Time.time)
+        {
+            mine.enabled = false;
+            me.isKinematic = true;
+            me.useGravity = false;
+            if (transform.localScale.x == 1)
+                transform.position = Vector3.Slerp(VaultPos.vaultRight.position, prePos, (vaultTimer - Time.time) / VaultPos.vaultSpeed);
+            else
+                transform.position = Vector3.Slerp(VaultPos.vaultLeft.position, prePos, (vaultTimer - Time.time) / VaultPos.vaultSpeed);
+            canVault = false;
+        }
+        else if(vaulting && vaultTimer <= Time.time)
+        {
+            vaulting = false;
+            mine.enabled = true;
+            me.isKinematic = false;
+            me.useGravity = true;
+        }
+
         else
         {
             if (m_dead == true)
@@ -195,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
         if(col.gameObject.tag == "Vaultable") {
             canVault = true;
             print("found1");
-            VaultPos = col.gameObject.GetComponent<Vaultable>().VaultEndpoint;
+            VaultPos = col.gameObject.GetComponent<Vaultable>();
         }
     }
 
