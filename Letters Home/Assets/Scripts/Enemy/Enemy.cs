@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,11 +22,6 @@ public class Enemy : MonoBehaviour
     public float domeTimer = 1.0f;
     public float lookTime = 2.0f;
     private float ltimer = 0.0f;
-    public bool Dead = false;
-    private bool HasDied = false;
-    public List<bool> ShotSpots = new List<bool>();
-    [SerializeField]
-    private Animator Anim;
 
     // Start is called before the first frame update
     void Start()
@@ -50,40 +44,14 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Dead)
-        {
-            enemySprite.transform.position = this.transform.position;
+        enemySprite.transform.position = this.transform.position;
 
-            if (los && patrol && agent)
-            {
-                patrollingLogic();
-            }
-        }
-        else if(!HasDied)
+        if (los && patrol && agent)
         {
-            HasDied = true;
-            Die();
+            patrollingLogic();
         }
     }
 
-
-    private void Die()
-    {
-        Destroy(enemySprite.gameObject, 0.5f);
-        Destroy(this.gameObject, 0.5f);
-        //Do Stuff with anims later.
-        if(ShotSpots[2] == true)
-        {
-            print("Headshot");
-        }else if(ShotSpots[1] == true)
-        {
-            print("LegShot");
-        }
-        else
-        {
-            print("BodyShot");
-        }
-    }
     /// <summary>
     /// Uses information from the PatrolAI script and EnemyLOS script to control the behavior of this Enemy.
     /// </summary>

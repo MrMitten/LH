@@ -18,8 +18,9 @@ public class EnemyLOS : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            
-            
+            Debug.DrawRay(RayStart.position, (other.gameObject.transform.position - RayStart.position), Color.magenta);
+            Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position), Color.magenta);
+            Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position), Color.magenta);
 
             Player check = other.GetComponent<Player>();
             Target = check.gameObject;
@@ -37,19 +38,16 @@ public class EnemyLOS : MonoBehaviour
                 if (hit.collider != null && hit.collider.gameObject.tag == "Player")
                 {
                     LastSeen = hit.collider.gameObject.transform.position;
-                    Debug.DrawRay(RayStart.position, (other.gameObject.transform.position - RayStart.position), Color.magenta);
                     canSee = true;
                 }
                 else if(hit1.collider != null && hit1.collider.gameObject.tag == "Player")
                 {
                     LastSeen = hit1.collider.gameObject.transform.position;
-                    Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position + Vector3.up) - RayStart.position), Color.magenta);
                     canSee = true;
                 }
                 else if(hit2.collider != null && hit2.collider.gameObject.tag == "Player")
                 {
                     LastSeen = hit2.collider.gameObject.transform.position;
-                    Debug.DrawRay(RayStart.position, ((other.gameObject.transform.position - Vector3.up) - RayStart.position), Color.magenta);
                     canSee = true;
                 }
                 else

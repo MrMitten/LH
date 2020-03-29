@@ -33,7 +33,7 @@ public class PatrolAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPatroling && !me.Dead)
+        if (isPatroling)
         {
             if (reset)
             {

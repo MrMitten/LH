@@ -7,8 +7,6 @@ public class DeathDetector : MonoBehaviour
 {
     public Player Trigger;
     public GameObject Settee;
-    public float delayTime = 2f;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -19,22 +17,11 @@ public class DeathDetector : MonoBehaviour
     void Update()
     {
         if (Trigger.GetDead() && !Settee.activeInHierarchy)
-            Invoke("delay", delayTime);
-            //Settee.SetActive(true);
+            Settee.SetActive(true);
     }
 
     public void ResetLevel()
     {
         SceneManager.LoadScene(0);  
-    }
-
-    public void delay()
-    {
-        Settee.SetActive(true);
-    }
-
-    private void OnGUI()
-    {
-        
     }
 }
