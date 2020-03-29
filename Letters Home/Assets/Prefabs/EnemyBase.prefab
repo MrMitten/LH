@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1780262170930658224}
   - component: {fileID: 1780262170930658231}
-  - component: {fileID: 1780262170930658225}
   - component: {fileID: 1780262170930658227}
   - component: {fileID: 1780262170930658226}
   - component: {fileID: 1780262170930658236}
@@ -29,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1780262170930658230}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 6.770733, y: -8.919195, z: 3.0736556}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1780262171924849210}
@@ -85,23 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1780262170930658225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1780262170930658230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75f93af4267ce1d46b093818fbf45570, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPatroling: 1
-  isFollowing: 0
-  speed: 5
-  groundDetection: {fileID: 1780262171924849210}
-  zDist: 0
 --- !u!114 &1780262170930658227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,12 +139,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39bbfeb2a5f1b3b49acf0a058b642087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  domeTimer: 2
   Target: {fileID: 0}
+  enemySprite: {fileID: 0}
+  speed: 3
   ganderSpeed: 0.3
-  isWaiting: 0
   isLooking: 0
+  isSearching: 0
+  domeTimer: 2
   lookTime: 5
+  Dead: 0
+  ShotSpots: 
+  Anim: {fileID: 0}
 --- !u!1 &1780262171924849209
 GameObject:
   m_ObjectHideFlags: 0

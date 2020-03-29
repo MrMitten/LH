@@ -8,6 +8,7 @@ public class UI_InvFinder : MonoBehaviour
     public static UI_InvFinder me;
     public Image ItemImage;
     public Text ItemText;
+    public GameObject messageObject;
     public Text messageText;
     public bool nearItem;
     public bool Dialogue;
@@ -57,7 +58,7 @@ public class UI_InvFinder : MonoBehaviour
 
     public void Update()
     {
-        messageText.enabled = nearItem;
+        messageObject.SetActive(nearItem);
         if (Dialogue)
         {
             DialogueHolder.SetActive(true);
